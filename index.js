@@ -1,6 +1,8 @@
 const express = require("express");
 const app = express();
 
+console.log("SERVIDOR SUBIU COM CÓDIGO NOVO");
+
 // isso é obrigatório para o Instagram mandar dados no body
 app.use(express.json());
 
@@ -27,8 +29,7 @@ app.get("/webhook", (req, res) => {
 
 // recebimento dos eventos (POST)
 app.post("/webhook", (req, res) => {
-  console.log("EVENTO RECEBIDO!");
-  console.log(JSON.stringify(req.body, null, 2));
+  console.log("CHEGOU UM POST NO /webhook");
   res.sendStatus(200);
 });
 
