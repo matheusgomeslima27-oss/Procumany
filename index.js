@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const bodyParser = require("body-parser");
 
@@ -6,6 +7,7 @@ app.use(bodyParser.json());
 
 // Agora o token vem da Render
 const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
+app.use(express.static(path.join(__dirname)));
 
 app.get("/webhook", (req, res) => {
   const mode = req.query["hub.mode"];
