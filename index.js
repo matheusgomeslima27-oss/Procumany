@@ -1,34 +1,35 @@
-const path = require("path");
 const express = require("express");
-const bodyParser = require("body-parser");
-
 const app = express();
-app.use(bodyParser.json());
 
-// Agora o token vem da Render
-const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
-app.use(express.static(path.join(__dirname)));
+// isso é obrigatório para o Instagram mandar dados no body
+app.use(express.json());
 
+// rota principal
+app.get("/", (req, res) => {
+  res.send("Bot do Instagram está rodando!");
+});
+
+// verificação do webhook (GET)
 app.get("/webhook", (req, res) => {
+  const VERIFY_TOKEN = process.env.VERIFY_TOKEN;
+
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
 
   if (mode === "subscribe" && token === VERIFY_TOKEN) {
+    console.log("Webhook verificado com sucesso!");
     res.status(200).send(challenge);
   } else {
     res.sendStatus(403);
   }
 });
 
+// recebimento dos eventos (POST)
 app.post("/webhook", (req, res) => {
   console.log("EVENTO RECEBIDO!");
   console.log(JSON.stringify(req.body, null, 2));
   res.sendStatus(200);
-});
-
-app.get("/", (req, res) => {
-  res.send("Bot do Instagram está rodando!");
 });
 
 const PORT = process.env.PORT || 3000;
