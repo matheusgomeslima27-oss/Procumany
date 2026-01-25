@@ -30,8 +30,10 @@ app.get("/webhook", (req, res) => {
 app.post("/webhook", (req, res) => {
   console.log("🔥 CHEGOU ALGUMA COISA DO INSTAGRAM 🔥");
   console.log(JSON.stringify(req.body, null, 2));
-  res.sendStatus(200);
-});
+
+  const entry = req.body.entry?.[0];
+  const changes = entry?.changes?.[0];
+  const value = changes?.value;
 
   if (value?.comment_id && value?.text) {
     const comentario = value.text.toLowerCase();
@@ -47,25 +49,15 @@ app.post("/webhook", (req, res) => {
   res.sendStatus(200);
 });
 
-// Função que envia a DM com botão
+// Função que envia a DM
 function enviarMensagem(userId) {
   const data = JSON.stringify({
     recipient: { id: userId },
     message: {
-      attachment: {
-        type: "template",
-        payload: {
-          template_type: "button",
-          text: "Ficamos felizes por ter interesse em nossos produtos, clique no botão abaixo para acessar nossos produtos 😉",
-          buttons: [
-            {
-              type: "web_url",
-              url: "https://collshp.com/procuro.achou_13?view=storefront",
-              title: "Clique aqui para acessar!"
-            }
-          ]
-        }
-      }
+      text:
+        "Ficamos felizes por ter interesse em nossos produtos! 😄\n\n" +
+        "Clique no link abaixo para acessar nossa loja:\n" +
+        "https://collshp.com/procuro.achou_13?view=storefront"
     }
   });
 
@@ -75,7 +67,7 @@ function enviarMensagem(userId) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "Content-Length": data.length
+      "Content-Length": Buffer.byteLength(data)
     }
   };
 
@@ -97,4 +89,5 @@ const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Servidor rodando na porta ${PORT}`);
 });
+
 
