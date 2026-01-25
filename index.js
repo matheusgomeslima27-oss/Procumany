@@ -52,7 +52,10 @@ app.post("/webhook", (req, res) => {
 // Função que envia a DM
 function enviarMensagem(userId) {
   const data = JSON.stringify({
-    recipient: { id: userId },
+    messaging_type: "RESPONSE",
+    recipient: {
+      id: userId
+    },
     message: {
       text:
         "Ficamos felizes por ter interesse em nossos produtos! 😄\n\n" +
@@ -63,7 +66,7 @@ function enviarMensagem(userId) {
 
   const options = {
     hostname: "graph.facebook.com",
-    path: `/v18.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
+    path: `/v19.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -72,18 +75,23 @@ function enviarMensagem(userId) {
   };
 
   const req = https.request(options, (res) => {
-    res.on("data", (d) => {
-      process.stdout.write(d);
+    let body = "";
+    res.on("data", (chunk) => {
+      body += chunk;
+    });
+    res.on("end", () => {
+      console.log("Resposta da API:", body);
     });
   });
 
   req.on("error", (error) => {
-    console.error(error);
+    console.error("Erro ao enviar DM:", error);
   });
 
   req.write(data);
   req.end();
 }
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
