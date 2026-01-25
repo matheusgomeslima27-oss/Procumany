@@ -60,14 +60,14 @@ function enviarMensagem(userId) {
     message: {
       text:
         "Ficamos felizes por ter interesse em nossos produtos! 😄\n\n" +
-        "Clique no link abaixo para acessar nossa loja:\n" +
+        "Clique no link abaixo para acessar:\n" +
         "https://collshp.com/procuro.achou_13?view=storefront"
     }
   });
 
   const options = {
     hostname: "graph.facebook.com",
-    path: `/v19.0/me/messages?access_token=${PAGE_ACCESS_TOKEN}`,
+    path: `/v19.0/${process.env.PAGE_ID}/messages?access_token=${PAGE_ACCESS_TOKEN}`,
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -77,21 +77,20 @@ function enviarMensagem(userId) {
 
   const req = https.request(options, (res) => {
     let body = "";
-    res.on("data", (chunk) => {
-      body += chunk;
-    });
+    res.on("data", (chunk) => (body += chunk));
     res.on("end", () => {
-      console.log("Resposta da API:", body);
+      console.log("📩 Retorno da API do Instagram:", body);
     });
   });
 
   req.on("error", (error) => {
-    console.error("Erro ao enviar DM:", error);
+    console.error("❌ Erro ao enviar DM:", error);
   });
 
   req.write(data);
   req.end();
 }
+
 
 
 const PORT = process.env.PORT || 3000;
