@@ -28,9 +28,10 @@ app.get("/webhook", (req, res) => {
 
 // Recebe eventos do Instagram
 app.post("/webhook", (req, res) => {
-  const entry = req.body.entry?.[0];
-  const changes = entry?.changes?.[0];
-  const value = changes?.value;
+  console.log("🔥 CHEGOU ALGUMA COISA DO INSTAGRAM 🔥");
+  console.log(JSON.stringify(req.body, null, 2));
+  res.sendStatus(200);
+});
 
   if (value?.comment_id && value?.text) {
     const comentario = value.text.toLowerCase();
