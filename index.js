@@ -32,8 +32,8 @@ app.post("/webhook", (req, res) => {
   console.log(JSON.stringify(req.body, null, 2));
 
   const entry = req.body.entry?.[0];
-  const changes = entry?.changes?.[0];
-  const value = changes?.value;
+  const change = entry?.changes?.[0];
+  const value = change?.value;
 
   if (value?.comment_id && value?.text) {
     const comentario = value.text.toLowerCase();
@@ -48,6 +48,7 @@ app.post("/webhook", (req, res) => {
 
   res.sendStatus(200);
 });
+
 
 // Função que envia a DM
 function enviarMensagem(userId) {
